@@ -2,11 +2,9 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
   FlatList,
   Image,
   StyleSheet,
-  ToastAndroid,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -18,6 +16,7 @@ import {Divider, Text, Vertical} from '../ui-kit';
 import {Loader} from '../ui-kit/loader';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-simple-toast';
 
 const url = API.baseUrls[API.currentEnv] + API.authUrls.getPostList;
 
@@ -56,18 +55,16 @@ export const Dashboard = ({route}) => {
             .then((res) => {
               // setSubmitting(false);
               console.log('res', res?.data);
-              ToastAndroid.show(
-                'Your offline post is successfully created',
-                ToastAndroid.SHORT,
-              );
+              // ToastAndroid.show(
+              //   'Your offline post is successfully created',
+              //   ToastAndroid.SHORT,
+              // );
+              Toast.show('Your offline post is successfully created');
             })
             .catch((e) => {
               // setSubmitting(false);
               console.log('error', e);
-              ToastAndroid.show(
-                'Your offline post is not successfully created',
-                ToastAndroid.SHORT,
-              );
+              Toast.show('Your offline post is not successfully created');
             });
         }
       };

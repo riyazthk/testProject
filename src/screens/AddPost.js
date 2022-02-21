@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, ToastAndroid, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {LaunchCamera} from '../components';
 import {Routes} from '../navigation';
 import {postApi} from '../services';
@@ -11,6 +11,7 @@ import {Screen} from '../ui-kit/screen';
 import {PostSchema} from '../utils/schema';
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-simple-toast';
 
 export const AddPost = ({route}) => {
   const {images = null} = route?.params ?? {};
@@ -60,31 +61,25 @@ export const AddPost = ({route}) => {
             const data = new FormData();
             data.append('title', values.title);
             data.append('category', values.category);
-            // data.append('media_list', {
-            //   uri: arr_image[0]?.uri,
-            //   type: arr_image[0]?.type,
-            //   name: arr_image[0]?.fileName,
-            // });
-            data.append('media_list', arr_image[0]?.fileName);
+            data.append('media_list', {
+              uri: arr_image[0]?.uri,
+              type: arr_image[0]?.type,
+              name: arr_image[0]?.fileName,
+            });
+            // data.append('media_list', arr_image[0]?.fileName);
             data.append('website', values.website);
             data.append('description', values.description);
+            console.log('payload data', data);
             if (isConnected) {
               postApi(token, data)
                 .then((res) => {
                   setSubmitting(false);
                   console.log('res', res?.data);
-                  ToastAndroid.show(
-                    'Your post is successfully created',
-                    ToastAndroid.SHORT,
-                  );
+                  Toast.show('Your post is successfully created');
                 })
                 .catch((e) => {
                   setSubmitting(false);
-                  ToastAndroid.show(
-                    'Your post is not successfully created',
-                    ToastAndroid.SHORT,
-                  );
-                  console.log('error', e);
+                  Toast.show('Your post is not successfully created');
                 });
             } else {
               let offlinePost = {
