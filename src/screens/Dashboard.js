@@ -43,26 +43,19 @@ export const Dashboard = ({route}) => {
           const data = new FormData();
           data.append('title', offlinePost.title);
           data.append('category', offlinePost.category);
-          // data.append('media_list', {
-          //   uri: arr_image[0]?.uri,
-          //   type: arr_image[0]?.type,
-          //   name: arr_image[0]?.fileName,
-          // });
-          data.append('media_list', offlinePost?.media_list[0]?.fileName);
+          data.append('media_list', {
+            uri: offlinePost?.media_list[0]?.uri,
+            type: offlinePost?.media_list[0]?.type,
+            name: offlinePost?.media_list[0]?.fileName,
+          });
+
           data.append('website', offlinePost.website);
           data.append('description', offlinePost.description);
           postApi(token, data)
             .then((res) => {
-              // setSubmitting(false);
-              console.log('res', res?.data);
-              // ToastAndroid.show(
-              //   'Your offline post is successfully created',
-              //   ToastAndroid.SHORT,
-              // );
               Toast.show('Your offline post is successfully created');
             })
             .catch((e) => {
-              // setSubmitting(false);
               console.log('error', e);
               Toast.show('Your offline post is not successfully created');
             });

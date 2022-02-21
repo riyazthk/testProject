@@ -18,15 +18,12 @@ export const getPostList = (token, url) => {
 };
 
 export const postApi = (token, data) => {
-  console.log('token', token, data);
-  return axios.post(
-    API.baseUrls[API.currentEnv] + API.authUrls.getPostList,
-    data,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetch(API.baseUrls[API.currentEnv] + API.authUrls.getPostList, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
     },
-  );
+    body: data,
+  });
 };

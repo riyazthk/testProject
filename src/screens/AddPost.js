@@ -20,8 +20,6 @@ export const AddPost = ({route}) => {
   const [arr_image, setArrImage] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
 
-  console.log('isConected', isConnected);
-
   useEffect(() => {
     const getLocalToken = async () => {
       setToken(await AsyncStorage.getItem('token'));
@@ -55,9 +53,7 @@ export const AddPost = ({route}) => {
           }}
           onSubmit={async (values, {setSubmitting, setErrors, resetForm}) => {
             setSubmitting(true);
-            let netinfoUnsubscribe = NetInfo.addEventListener(
-              handleConnectivityChange,
-            );
+            NetInfo.addEventListener(handleConnectivityChange);
             const data = new FormData();
             data.append('title', values.title);
             data.append('category', values.category);
@@ -66,16 +62,19 @@ export const AddPost = ({route}) => {
               type: arr_image[0]?.type,
               name: arr_image[0]?.fileName,
             });
-            // data.append('media_list', arr_image[0]?.fileName);
             data.append('website', values.website);
             data.append('description', values.description);
-            console.log('payload data', data);
+
             if (isConnected) {
               postApi(token, data)
                 .then((res) => {
                   setSubmitting(false);
                   console.log('res', res?.data);
                   Toast.show('Your post is successfully created');
+                  navigation.navigate(Routes.DASHBOARD, {
+                    flag: Math.random(),
+                    token: token,
+                  });
                 })
                 .catch((e) => {
                   setSubmitting(false);
