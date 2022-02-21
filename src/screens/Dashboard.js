@@ -27,7 +27,7 @@ export const Dashboard = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [postWholeData, setPostWholeData] = useState(null);
   const [postList, setPostList] = useState([]);
-  const [nextPage, setNextPage] = useState(null);
+  const [nextPage, setNextPage] = useState(1);
   const [isConnected, setIsConnected] = useState(null);
   const [offlinePost, setOfflinePost] = useState(null);
 
@@ -67,7 +67,9 @@ export const Dashboard = ({route}) => {
         setLoading(false);
         setPostWholeData(res?.data);
         setPostList(res?.data?.results);
-        setNextPage(res?.data?.next?.split('?'));
+        if (res?.data?.next) {
+          setNextPage(nextPage + 1);
+        }
       });
       getLocalPostData();
     } else {
@@ -77,7 +79,10 @@ export const Dashboard = ({route}) => {
         if (localListData) {
           setPostWholeData(JSON.parse(localListData));
           setPostList(JSON.parse(localListData?.results));
-          setNextPage(JSON.parse(localListData?.next?.split('?')));
+          // setNextPage(JSON.parse(localListData?.next?.split('?')));
+          if (JSON.parse(localListData?.next)) {
+            setNextPage(nextPage + 1);
+          }
         }
       };
       getLocalStorage();
@@ -174,13 +179,15 @@ export const Dashboard = ({route}) => {
   };
 
   const endReached = () => {
-    const pagUrl = url + `?${nextPage}`;
+    const pagUrl = url + `?page=${nextPage}`;
     if (postWholeData?.next && isConnected) {
       getPostList(token, pagUrl)
         .then((res) => {
           setPostWholeData(res?.data);
           setPostList(postList?.concat(res?.data?.results));
-          console.log('res', res?.data);
+          if (res?.data?.next) {
+            setNextPage(nextPage + 1);
+          }
         })
         .catch((e) => {
           console.log('err', e);
@@ -225,8 +232,8 @@ export const Dashboard = ({route}) => {
               index.toString();
             }}
             onEndReachedThreshold={0.7}
-            // onEndReached={endReached}
-            // ListFooterComponent={renderFooter}
+            onEndReached={endReached}
+            ListFooterComponent={renderFooter}
           />
         </>
       ) : (
